@@ -1,0 +1,12 @@
+---
+docker_apt_repo: deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main
+docker_apt_key_url: hkp://p80.pool.sks-keyservers.net:80
+docker_apt_key_sig: 58118E89F3A912897C070ADBF76221572C52609D
+docker_package_name: docker-engine
+docker_package_version: ~ # use "latest" to upgrade
+docker_install_kernel_extras: yes
+
+docker_opts: []
+
+docker_install_docker_py: no
+docker_py_version: 1.9.0 # latest

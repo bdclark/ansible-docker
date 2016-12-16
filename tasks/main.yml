@@ -1,0 +1,85 @@
+---
+- name: add docker repository key
+  apt_key:
+    id: "{{ docker_apt_key_sig }}"
+    keyserver: "{{ docker_apt_key_url }}"
+    state: present
+
+- name: add docker repo
+  apt_repository:
+    repo: "{{ docker_apt_repo }}"
+    update_cache: yes
+    state: present
+
+- name: install kernel extras
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - linux-image-extra-{{ ansible_kernel }}
+    - linux-image-extra-virtual
+  when: docker_install_kernel_extras
+
+- name: install docker package
+  apt:
+    name: "{{ docker_package_name + '=' + docker_package_version if (docker_package_version and docker_package_version != 'latest') else docker_package_name }}"
+    state: "{{ 'latest' if docker_package_version == 'latest' else 'present' }}"
+
+- name: create docker.service.d directory (systemd)
+  file:
+    dest: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: docker_opts and ansible_service_mgr == 'systemd'
+
+- name: create docker environment drop-in (systemd)
+  copy:
+    content: |
+      [Service]
+      EnvironmentFile=-/etc/default/docker
+    dest: /etc/systemd/system/docker.service.d/environment.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart docker
+  when: docker_opts and ansible_service_mgr == 'systemd'
+
+- name: set docker daemon options
+  copy:
+    content: "DOCKER_OPTS=\"{{ docker_opts | join(' ') }}\""
+    dest: /etc/default/docker
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart docker
+  when: docker_opts
+
+- name: check if /etc/default/ufw exists
+  stat:
+    path: /etc/default/ufw
+  register: ufw_default_exists
+
+- name: set ufw default forward policy to accept
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: "^DEFAULT_FORWARD_POLICY="
+    line: "DEFAULT_FORWARD_POLICY=\"ACCEPT\""
+  when: ufw_default_exists.stat.exists
+
+- name: install pip
+  package:
+    name: python-pip
+    state: present
+  when: docker_install_docker_py
+
+- name: pip install docker-py
+  pip:
+    name: docker-py
+    version: "{{ docker_py_version if (docker_py_version and docker_py_version != 'latest') else omit }}"
+    state: "{{ 'latest' if docker_py_version == 'latest' else 'present' }}"
+  when: docker_install_docker_py
