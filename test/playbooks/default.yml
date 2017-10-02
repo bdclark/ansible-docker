@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    docker_package_version: 17.06.2*  # 17.06.2~ce-0~ubuntu
+    docker_install_docker_py: yes
+    docker_daemon_options:
+      dns:
+        - 8.8.8.8
+        - 8.8.4.4
+  roles:
+    - role: docker

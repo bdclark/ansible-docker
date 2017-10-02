@@ -17,5 +17,5 @@ TODO: Add example playbook(s).
 ```yaml
 - hosts: servers
   roles:
-     - role: docker
+    - role: docker
 ```
