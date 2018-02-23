@@ -27,7 +27,7 @@
   with_items:
     - linux-image-extra-{{ ansible_kernel }}
     - linux-image-extra-virtual
-  when: docker_install_kernel_extras
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version|version_compare('14.04', '<=')
 
 - name: install docker package
   apt:
