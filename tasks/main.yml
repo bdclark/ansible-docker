@@ -34,6 +34,11 @@
     name: "{{ docker_package_name + '=' + docker_package_version if (docker_package_version and docker_package_version != 'latest') else docker_package_name }}"
     state: "{{ 'latest' if docker_package_version == 'latest' else 'present' }}"
 
+- name: create docker config directory
+  file:
+    path: /etc/docker
+    state: directory
+
 - name: set docker daemon options
   copy:
     content: "{{ docker_daemon_options | to_nice_json }}"
