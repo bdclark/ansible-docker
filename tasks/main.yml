@@ -1,12 +1,23 @@
 ---
-- name: insall dependencies
+- name: install dependencies
   apt:
     name: "{{ item }}"
     state: present
   with_items:
     - apt-transport-https
     - ca-certificates
-    - gnupg-curl
+
+- name: install gnupg for !=bionic
+  apt:
+    name: gnupg-curl
+    state: present
+  when: ansible_distribution_release|lower != "bionic"
+
+- name: ensure curl is installed for bionic
+  apt:
+    name: curl
+    state: present
+  when: ansible_distribution_release|lower == "bionic"
 
 - name: add docker repository key
   apt_key:
