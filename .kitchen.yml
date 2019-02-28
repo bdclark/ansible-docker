@@ -13,10 +13,10 @@ verifier:
   name: inspec
 
 platforms:
-  - name: ubuntu-14.04
+  - name: ubuntu-18.04
   - name: ubuntu-16.04
 
 suites:
   - name: default
     provisioner:
-      playbook: test/playbooks/default.yml
+      playbook: test/integration/default/playbook.yml

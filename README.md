@@ -1,4 +1,6 @@
-# docker
+# Docker Ansible Role
+
+[![Build Status](https://travis-ci.org/bdclark/ansible-docker.svg?branch=master)](https://travis-ci.org/bdclark/ansible-docker)
 
 Install and configure docker service
 

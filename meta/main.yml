@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Brian Clark
   description: Install and configure docker service
@@ -8,7 +9,7 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - trusty
+        - bionic
         - xenial
 
   galaxy_tags: []
