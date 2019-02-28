@@ -27,7 +27,10 @@
 
 - name: install docker package
   apt:
-    name: "{{ docker_package_name }}{% if (docker_package_version|length > 0) and (docker_package_version != 'latest') %}={{ docker_package_version }}{% endif %}"
+    name: "{{ docker_package_name }}\
+      {% if (docker_package_version|length > 0) and (docker_package_version != 'latest') %}\
+      ={{ docker_package_version }}\
+      {% endif %}"
     state: "{{ 'latest' if docker_package_version == 'latest' else 'present' }}"
 
 - name: create docker config directory
