@@ -18,6 +18,9 @@ docker_apt_key_sig: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 # dictionary of daemon config to render into /etc/docker/daemon.json
 docker_daemon_options: {}
 
+# whether docker daemon is enabled/running or disabled/stopped
+docker_service_enabled: true
+
 # how to install docker-py ('pip', 'package', or '' to skip install)
 docker_py_install_method: ''
 # version of docker-py pip/os package, '' for present, or 'latest' to upgrade

@@ -2,6 +2,7 @@
 - hosts: all
   become: true
   vars:
+    docker_service_enabled: false
     docker_py_install_method: pip
     docker_daemon_options:
       dns:
