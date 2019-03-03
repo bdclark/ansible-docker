@@ -14,6 +14,8 @@ end
 
 describe systemd_service('docker') do
   it { should be_installed }
+  it { should be_enabled }
+  it { should_not be_running }
 end
 
 describe command('pip list') do

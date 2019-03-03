@@ -2,7 +2,8 @@
 - hosts: all
   become: true
   vars:
-    docker_service_enabled: false
+    docker_service_enabled: true
+    docker_service_state: stopped
     docker_py_install_method: pip
     docker_daemon_options:
       dns:

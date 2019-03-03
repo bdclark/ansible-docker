@@ -50,7 +50,7 @@
 - name: manage docker service
   service:
     name: docker
-    state: "{{ docker_service_enabled | ternary('started', 'stopped') }}"
+    state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
 
 - name: install pip

@@ -3,4 +3,4 @@
   service:
     name: docker
     state: restarted
-  when: docker_service_enabled
+  when: docker_service_enabled and docker_service_state == 'started'
