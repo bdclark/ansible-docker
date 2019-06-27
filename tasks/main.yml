@@ -24,22 +24,3 @@
 
 - include: docker_compose.yml
   when: docker_install_compose | bool
-
-- name: install pip
-  package:
-    name: python-pip
-    state: present
-  when: docker_py_install_method == 'pip'
-
-- name: pip install docker-py
-  pip:
-    name: docker-py
-    version: "{{ docker_py_version if (docker_py_version and docker_py_version != 'latest') else omit }}"
-    state: "{{ 'latest' if docker_py_version == 'latest' else 'present' }}"
-  when: docker_py_install_method == 'pip'
-
-- name: install docker-py (package)
-  apt:
-    name: python-docker{% if docker_py_version not in ['', 'latest'] %}={{ docker_py_version }}{% endif %}
-    state: "{{ 'latest' if docker_py_version == 'latest' else 'present' }}"
-  when: docker_py_install_method == 'package'
