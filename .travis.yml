@@ -1,16 +1,19 @@
 ---
-language: ruby
+language: python
 services: docker
 dist: xenial
+python:
+  - "2.7"
+  - "3.7"
 
 env:
   global:
-    - ROLE_NAME: docker
-    - REPO_NAME: "ansible-${ROLE_NAME}"
-    - KITCHEN_YAML: .kitchen.docker.yml
+    - ROLE_NAME=docker
+    - REPO_NAME=ansible-${ROLE_NAME}
   matrix:
-    - ANSIBLE_VERSION: '2.5'
-    - ANSIBLE_VERSION: '2.7'
+    - ANSIBLE_VERSION=2.6
+    - ANSIBLE_VERSION=2.7
+    - ANSIBLE_VERSION=2.8
 
 before_install:
   # project directory must match role name
@@ -26,7 +29,7 @@ install:
 
 script:
   - yamllint .
-  - ansible-lint .
+  - ansible-lint -v . test/integration/default/playbook.yml
   - ansible --version
   - bundle exec kitchen list
-  - bundle exec kitchen verify
+  - bundle exec kitchen test
