@@ -1,36 +1,5 @@
 ---
-- name: install dependencies
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - apt-transport-https
-    - ca-certificates
-
-- name: install gnupg-curl
-  apt:
-    name: gnupg-curl
-  when: ansible_distribution_version is version('18.04', '<')
-
-- name: add docker repository key
-  apt_key:
-    id: "{{ docker_apt_key_sig }}"
-    keyserver: "{{ docker_apt_key_url }}"
-    state: present
-
-- name: add docker repo
-  apt_repository:
-    repo: "{{ docker_apt_repo }}"
-    update_cache: true
-    state: present
-
-- name: install docker package
-  apt:
-    name: "{{ docker_package_name }}\
-      {% if (docker_package_version|length > 0) and (docker_package_version != 'latest') %}\
-      ={{ docker_package_version }}\
-      {% endif %}"
-    state: "{{ 'latest' if docker_package_version == 'latest' else 'present' }}"
+- include: "install_{{ ansible_os_family | lower }}.yml"
 
 - name: create docker config directory
   file:
@@ -52,6 +21,9 @@
     name: docker
     state: "{{ docker_service_state }}"
     enabled: "{{ docker_service_enabled }}"
+
+- include: docker_compose.yml
+  when: docker_install_compose | bool
 
 - name: install pip
   package:

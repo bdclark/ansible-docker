@@ -1,0 +1,36 @@
+---
+- block:
+    - name: docker repository key
+      rpm_key:
+        key: "{{ docker_yum_repo_key }}"
+        state: present
+
+    - name: docker repository
+      get_url:
+        url: "{{ docker_yum_repo_url }}"
+        dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: enable/disable release channel repos
+      ini_file:
+        dest: "/etc/yum.repos.d/docker-{{ docker_edition }}.repo"
+        section: "docker-{{ docker_edition }}-{{ item }}"
+        option: "docker-{{ docker_edition }}-{{ item }}"
+        value: "{{ docker_release_channel == item | ternary(1,0) }}"
+      with_items: "{{ docker_release_channels }}"
+  when: ansible_distribution != 'Amazon'
+
+- name: enable docker repo (amazon)
+  command:  amazon-linux-extras enable docker
+  changed_when: false
+  when: ansible_distribution == 'Amazon'
+
+- name: install docker
+  yum:
+    name: "{{ docker_package_name }}\
+      {% if (docker_package_version|length > 0) and (docker_package_version != 'latest') %}\
+      -{{ docker_package_version }}\
+      {% endif %}"
+    state: "{{ 'latest' if docker_package_version == 'latest' else 'present' }}"

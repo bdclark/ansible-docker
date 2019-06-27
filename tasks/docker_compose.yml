@@ -1,0 +1,25 @@
+---
+- block:
+    - name: check docker compose version
+      command: docker-compose --version
+      register: _docker_compose_current_version
+      changed_when: false
+      failed_when: false
+
+    - name: delete existing docker compose if version differs
+      file:
+        path: "{{ docker_compose_path }}"
+        state: absent
+      when: >
+        _docker_compose_current_version.stdout is defined
+        and docker_compose_version not in _docker_compose_current_version.stdout
+  when: docker_compose_checksum | length == 0
+
+- name: install docker compose
+  get_url:
+    url: "{{ docker_compose_url }}"
+    checksum: "{{ docker_compose_checksum }}"
+    dest: "{{ docker_compose_path }}"
+    owner: root
+    group: root
+    mode: 0755
